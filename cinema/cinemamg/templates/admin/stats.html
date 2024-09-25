@@ -1,0 +1,54 @@
+<!--thiết kế thống kê theo suất chiếu của từng rạp => VD: rạp quận 12 có n suất chiếu hellboy, a schieu insideout,.. tính-->
+<!--theo số lượng suất chiếu-->
+<!-- - thống kê phim nào đang nổi <=> có nhiều suất chiếu, rạp nào đông khách-->
+<!-- - thống kê thể loại phim được ưa chuộng (sử dụng AI để phân tích thói quen khách hàng ***)-->
+<!--=> thống kê theo tuần, tháng -->
+
+
+{% extends 'admin/base_site.html' %}
+{% block content %}
+<h1>THỐNG KÊ SỐ LƯỢNG PHIM ĐANG CHIẾU</h1>
+
+<ul>
+    {% for s in movie_stats %}
+    <li><strong>{{ s.name }}: </strong> {{ s.c }}</li>
+    {% endfor %}
+</ul>
+
+<div style="width:50%;">
+     <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let data = [];
+    let labels = [];
+    {% for s in movie_stats %}
+        data.push({{ s.c }});
+        labels.push('{{s.name}}');
+    {% endfor %}
+    window.onload = function() {
+        const ctx = document.getElementById('myChart');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Số lượng',
+            data: data,
+            borderWidth: 1,
+            backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+</script>
+{% endblock %}

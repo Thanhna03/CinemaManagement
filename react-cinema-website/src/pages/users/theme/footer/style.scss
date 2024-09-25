@@ -1,0 +1,85 @@
+.footer {
+    background: #F3F6FA;
+    padding-top: 70px;
+    padding-bottom: 0;
+
+
+    .footer_info {
+        margin-bottom: 30px;
+
+        .footer_logo {
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        ul li {
+            font-size: 16px;
+            color: black;
+            line-height: 30px;
+            list-style: none;
+        }
+    }
+
+    .footer_widget {
+        margin-bottom: 30px;
+        overflow: hidden;
+
+        h6 {
+            color: black;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        ul {
+            float: left;
+            width: 50%;
+
+            li {
+                list-style: none;
+                font-size: 14px;
+                line-height: 32px;
+            }
+
+            a {
+                color: black;
+                text-decoration: none;
+            }
+        }
+
+        p {
+            font-size: 14px;
+            color: black;
+            margin-bottom: 30px;
+        }
+
+        form {
+            position: relative;
+            margin-bottom: 30px;
+
+            .input_group {    
+                display: flex;
+                align-items: center;
+
+                input {
+                    width: 100%;
+                    font-size: 16px;
+                    padding-left: 20px;
+                    color: black;
+                    height: 46px;
+                    border: 1px solid #ededed;
+
+                    ::placeholder {
+                        color: #ededed;
+                    }
+                }
+
+                button {
+                    padding: 0 26px;
+                    height: 46px;
+                    min-width: max-content;
+                }
+            }
+        }
+    }
+}
