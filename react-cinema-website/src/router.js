@@ -6,8 +6,11 @@ import HomePages from "./pages/users/HomePages/HomePages";
 import { Router } from "./utils/router";
 import { Route, Routes } from "react-router-dom";
 import MasterLayout from "./pages/users/theme/masterLayout";
-import ProfilePages from "./pages/users/ProfilePages/ProfilePages";
+import ProfilePages from "./pages/permis/ProfilePages/ProfilePages";
 import MovieShowing from './pages/users/Movie/movie_showing';
+import MovieUpcoming from './pages/users/Movie/movie_upcoming';
+import Login from "./pages/permis/login";
+import Signup from "./pages/permis/signup";
 
 const renderUserRouter = () => {
     const userRoueter = [
@@ -22,6 +25,21 @@ const renderUserRouter = () => {
         {
             path: Router.user.MOVIE_SHOWING,
             element: <MovieShowing />,
+
+        },
+        {
+            path: Router.user.MOVIE_UPCOMING,
+            element: <MovieUpcoming />,
+
+        },
+        {
+            path: Router.permis.LOGIN,
+            element: <Login />,
+
+        },
+        {
+            path: Router.permis.SIGNUP,
+            element: <Signup />,
 
         },
     ]

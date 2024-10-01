@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.utils import timezone
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class MovieSerializer(serializers.ModelSerializer):
     genre_names = serializers.SerializerMethodField()
-
+    # release_date = serializers.DateTimeField(format="%Y-%m-%d")
 
     def to_representation(self, instance):
         req = super().to_representation(instance)
@@ -21,7 +22,7 @@ class MovieSerializer(serializers.ModelSerializer):
         return req
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'genre_names', 'poster_img']
+        fields = ['id', 'name', 'genre_names', 'release_date', 'poster_img']
 
     def get_genre_names(self, obj):
         return [genre.name for genre in obj.genre.all()]

@@ -45,7 +45,7 @@ class Movie(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     genre = models.ManyToManyField(Genre, null=True, blank=True)
-    release_date = models.DateTimeField(blank=True, null=True) #blank=True để có thể chỉnh sửa date -> chứ kh phải là mặc định
+    release_date = models.DateField(blank=True, null=True) #blank=True để có thể chỉnh sửa date -> chứ kh phải là mặc định
     trailer_url = models.URLField(null=True, blank=True)
     # poster_img = models.ImageField(upload_to='cinemamg/%Y/%m/', null=True, blank=True)
     poster_img = CloudinaryField(null=True)

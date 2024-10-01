@@ -1,0 +1,104 @@
+.movie-theater-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  
+    .header {
+      margin-bottom: 20px;
+  
+      h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+  
+      p {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  
+    .theater-selector {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+  
+      select {
+        margin-left: 10px;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    }
+  
+    .movie-section {
+      h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #0056b3;
+      }
+    }
+  
+    .date-selector {
+      display: flex;
+      overflow-x: auto;
+      margin-bottom: 20px;
+  
+      button {
+        flex: 0 0 auto;
+        padding: 10px 15px;
+        margin-right: 10px;
+        border: none;
+        background-color: #f0f0f0;
+        cursor: pointer;
+  
+        &.active {
+          background-color: #0056b3;
+          color: white;
+        }
+      }
+    }
+  
+    .movie-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+  
+    .movie-card {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+  
+      img {
+        width: 100%;
+        height: auto;
+      }
+  
+      .movie-info {
+        padding: 10px;
+  
+        h3 {
+          font-size: 16px;
+          margin-bottom: 5px;
+        }
+  
+        .rating, .age-rating {
+          display: inline-block;
+          padding: 2px 5px;
+          margin-right: 5px;
+          font-size: 12px;
+          border-radius: 3px;
+        }
+  
+        .rating {
+          background-color: #ffd700;
+        }
+  
+        .age-rating {
+          background-color: #ff4500;
+          color: white;
+        }
+      }
+    }
+  }

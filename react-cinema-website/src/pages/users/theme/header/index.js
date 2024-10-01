@@ -106,10 +106,11 @@ const Header = ({ showCarousel = true }) => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to={""}>
+                                    <Link to={"/dang_nhap"}>
                                         <AiOutlineUser />
+                                        <a>Sigin</a>
                                     </Link>
-                                    <span>Sigin</span>
+                                    
                                 </li>
 
                             </ul>

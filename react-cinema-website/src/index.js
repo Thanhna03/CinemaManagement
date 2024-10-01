@@ -15,6 +15,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from 'react-router-dom';
 import RouterCustom from './router';
 import "./style/MyStyle.scss";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
 
@@ -24,6 +25,7 @@ root.render(
     <RouterCustom />
   </BrowserRouter>
 );
+
 
 
 

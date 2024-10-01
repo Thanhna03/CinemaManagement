@@ -1,13 +1,19 @@
 export const Router = {
     user:{
         HOME: "", 
-        PROFILE: "profile",
-        MOVIE_SHOWING: "/movie_showing",
-        MOVIE_UPCOMING: "/movie_upcoming",
-        CINEMA_HALL: "/cinema_hall",
-        PROMOTION: "/promotion",
+        MOVIE_SHOWING: "/phim_dang_chieu",
+        MOVIE_UPCOMING: "/phim_sap_chieu",
+        CINEMA_HALL: "/rap",
+        PROMOTION: "/khuyen_mai",
 
     },
+
+    permis: {
+        LOGIN: "/dang_nhap",
+        SIGNUP: "/dang_ky",
+        PROFILE: "/thong_tin",
+
+    }
 };
 
 
