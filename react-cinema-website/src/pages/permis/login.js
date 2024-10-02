@@ -23,14 +23,18 @@ const Login = () => {
             const res = await APIs.post(endpoints['login'], {
                 'username': email,
                 'password': password,
-                'client_id': process.env.REACT_APP_CLIENT_ID,
-                'client_secret': process.env.REACT_APP_CLIENT_SECRET,
+                // 'client_id': process.env.REACT_APP_CLIENT_ID,
+                // 'client_secret': process.env.REACT_APP_CLIENT_SECRET,
+                'client_id': 'ieYXizKVaptkqlAEmh5QD0QGEDBR6mbTYx92siJY',
+                'client_secret': 'LNtjKjG2SMklsMnr55SFkqm3Lxoh98sPnY1gIwcVg5ZofVOwnGvmfkyArMTLzBS0WARxF62u0v5Kgb9HFiFkpv74O29t7RnGWqWsjnD5uW6BJcpYn5nDkEKsNpYPmVrt',
                 'grant_type': "password",
             }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
+
+            console.log('Login response:', res);
     
             if (res.status === 200 && res.data.access_token) {
                 cookie.save("token", res.data.access_token);
@@ -52,6 +56,7 @@ const Login = () => {
         } catch (ex) {
             console.error("Lỗi tại màn hình đăng nhập:", ex);
             if (ex.response) {
+                console.log('Login attempt with:', { email, password });
                 handleLoginError(ex.response.status);
             } else {
                 setError("Lỗi kết nối, vui lòng thử lại sau.");
@@ -75,16 +80,13 @@ const Login = () => {
           default:
             setError("Đã xảy ra lỗi, vui lòng thử lại sau");
         }
-      };
-
-
+    };
 
 
 
     return (
     <div className="login-container">
         <div className="login-header">
-        <img src="/api/placeholder/150/150" alt="Logo" />
         <h2>Đăng Nhập Tài Khoản</h2>
         </div>
         {/* {error && (

@@ -1,0 +1,91 @@
+.admin-movie-management {
+  padding: 2rem;
+  
+  h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: #f7fafc;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &-primary {
+      background-color: #4299e1;
+      color: white;
+
+      &:hover {
+        background-color: #3182ce;
+      }
+    }
+
+    &-danger {
+      background-color: #f56565;
+      color: white;
+
+      &:hover {
+        background-color: #e53e3e;
+      }
+    }
+  }
+
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      width: 100%;
+      max-width: 500px;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.25rem;
+    }
+  }
+}

@@ -63,14 +63,20 @@
 .movie-cards {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 20px;
+
+  &::after {
+    content: "";
+    flex: auto;
+  }
 }
 
 .movie-card {
   background-color: #fff;
   border-radius: 8px;
-  width: calc(20% - 20px); /* Giả sử bạn muốn hiển thị 5 poster trên một hàng */
-  margin: 10px;
+  width: calc((100% - 80px) / 5); /* For 5 cards per row with 20px gap */
+  margin-bottom: 20px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;

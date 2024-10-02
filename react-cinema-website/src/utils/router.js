@@ -13,7 +13,14 @@ export const Router = {
         SIGNUP: "/dang_ky",
         PROFILE: "/thong_tin",
 
+    },
+
+    admin: {
+        MOVIE_MANAGE: "/admin_movie",
+        
     }
+
+
 };
 
 

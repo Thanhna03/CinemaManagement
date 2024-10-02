@@ -22,7 +22,7 @@ class MovieSerializer(serializers.ModelSerializer):
         return req
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'genre_names', 'release_date', 'poster_img']
+        fields = ['id', 'name', 'genre_names', 'release_date', 'description', 'poster_img']
 
     def get_genre_names(self, obj):
         return [genre.name for genre in obj.genre.all()]

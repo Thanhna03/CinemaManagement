@@ -8,7 +8,7 @@
     export const endpoints = {
         'movie': 'movie/',
         'login': 'users/',
-
+        'current_user': '/users/current_user/' ,
 
     };  
 

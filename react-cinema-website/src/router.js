@@ -11,6 +11,7 @@ import MovieShowing from './pages/users/Movie/movie_showing';
 import MovieUpcoming from './pages/users/Movie/movie_upcoming';
 import Login from "./pages/permis/login";
 import Signup from "./pages/permis/signup";
+import Movie_Management from "./pages/admin/movie/movie_edit"
 
 const renderUserRouter = () => {
     const userRoueter = [
@@ -42,6 +43,12 @@ const renderUserRouter = () => {
             element: <Signup />,
 
         },
+        {
+            path: Router.admin.MOVIE_MANAGE,
+            element: <Movie_Management />,
+
+        },
+
     ]
 
     return (
