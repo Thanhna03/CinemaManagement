@@ -6,9 +6,13 @@
 
 
     export const endpoints = {
-        'movie': 'movie/',
-        'login': 'users/',
-        'current_user': '/users/current_user/' ,
+        'movie': '/api/movie/',
+        'signup': '/api/users/',
+        'login': '/o/token/',
+        'current_user': '/users/current-user/' ,
+        'showtime': '/api/showtime/',
+        'cinema_hall': '/api/cinema_hall/',
+
 
     };  
 

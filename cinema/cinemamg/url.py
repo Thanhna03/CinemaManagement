@@ -14,9 +14,11 @@ r.register(r'review', views.ReviewViewSet, 'review')
 r.register(r'promotions', views.PromotionViewSet, 'promotion')
 r.register(r'booking', views.BookingViewSet, 'booking')
 r.register(r'invoice', views.InvoiceViewSet, 'invoice')
+r.register(r'users', views.UserViewSet, basename='user')
 
 
 
 urlpatterns = [
-    path('', include(r.urls))
+    path('', include(r.urls)),
+    path('api/', include(r.urls)),
 ]

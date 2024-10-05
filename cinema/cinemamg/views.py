@@ -6,10 +6,23 @@ from rest_framework.response import Response
 from rest_framework import status, parsers
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
+class IsSuperuserOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_superuser
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_superuser
+
 class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView):
     queryset = Movie.objects.all().order_by('name')
     serializer_class = serializers.MovieSerializer
     pagination_class = paginators.MoviePaginator
+    permission_classes = [IsSuperuserOrReadOnly]
+
 
     def get_queryset(self):
         queryset = self.queryset
@@ -29,17 +42,29 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
         return Response(serializers.ReviewSerializer(review, many=True).data)
 
     def create(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can add movies."},
+                            status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            genre = serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            movie = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can update movies."},
+                            status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
-        genre = self.get_object()
-        genre.delete()
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can delete movies."},
+                            status=status.HTTP_403_FORBIDDEN)
+        movie = self.get_object()
+        movie.delete()
         return Response({
-            'message': 'Genre deleted successfully'
+            'message': 'Movie deleted successfully'
         }, status=status.HTTP_204_NO_CONTENT)
 
 class ShowtimeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
@@ -54,28 +79,28 @@ class UserViewSet(viewsets.ModelViewSet, generics.UpdateAPIView):
     parser_classes = [parsers.MultiPartParser]
     permission_classes = [permissions.AllowAny()]
 
-    @action(methods=['get', 'patch'], url_path='current-user', detail=False)
+    @action(methods=['get', 'patch', 'post'], url_path='current-user', detail=False)
     def get_current_user(self, request):
         user = request.user
-        if request.method.__eq__('PATCH'):
+        if request.method == 'PATCH':
             for key, value in request.data.items():
                 setattr(user, key, value)
             user.save()
-        return Response(serializers.UserSerializer(request.user).data)
+        elif request.method == 'POST':
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializers.UserSerializer(user).data)
 
     def get_permissions(self):
         if self.action in ['get_current_user']:
             return [permissions.IsAuthenticated()]
-
         return [permissions.AllowAny()]
-
-    # def get_serializer_class(self):
-    #     if self.request.user.is_authenticated:
-    #         return serializers.A
 
     def retrieve(self, request, *args, **kwargs):
         return Response(self.get_serializer(self.get_object()).data, status=status.HTTP_200_OK)
-
 
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
@@ -87,6 +112,14 @@ class UserViewSet(viewsets.ModelViewSet, generics.UpdateAPIView):
         return Response({
             'message': 'User deleted successfully'
         }, status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['GET'], permission_classes=[permissions.IsAuthenticated])
+    def check_admin(self, request):
+        is_admin = request.user.is_superuser  # hoặc bất kỳ logic nào xác định admin
+        return Response({
+            'isAdmin': is_admin,
+            'username': request.user.username
+        })
 
 class GenreViewSet(viewsets.ModelViewSet, generics.CreateAPIView,
                                         generics.UpdateAPIView,

@@ -34,7 +34,7 @@ const Header = ({ showCarousel = true }) => {
             ],
         },
         {
-            name: "Rạp",
+            name: "Rạp/Suất chiếu",
             path: Router.user.CINEMA_HALL,
         },
         {

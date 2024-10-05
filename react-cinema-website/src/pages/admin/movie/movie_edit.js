@@ -21,17 +21,20 @@ const AdminMovieManagement = () => {
 
   const checkAdminStatus = async () => {
     try {
-      const response = await axios.get('/api/check-admin');
+      const response = await axios.get('/api/users/check_admin/');
       setIsAdmin(response.data.isAdmin);
+      if (!response.data.isAdmin) {
+        navigate('/dang_nhap'); // Chuyển hướng nếu không phải admin
+      }
     } catch (error) {
       console.error('Error checking admin status:', error);
-      navigate('/login');
+      navigate('/dang_nhap');
     }
   };
 
   const fetchMovies = async () => {
     try {
-      const response = await axios.get('/api/movies');
+      const response = await axios.get('/movies');
       setMovies(response.data);
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -51,7 +54,7 @@ const AdminMovieManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa phim này?')) {
       try {
-        await axios.delete(`/api/movies/${id}`);
+        await axios.delete(`/movie/${id}/`);
         fetchMovies();
       } catch (error) {
         console.error('Error deleting movie:', error);
@@ -66,9 +69,9 @@ const AdminMovieManagement = () => {
 
     try {
       if (currentMovie) {
-        await axios.put(`/api/movies/${currentMovie.id}`, movieData);
+        await axios.put(`/movie/${currentMovie.id}/`, movieData);
       } else {
-        await axios.post('/api/movies', movieData);
+        await axios.post('/movie/', movieData);
       }
       setShowModal(false);
       fetchMovies();
@@ -92,17 +95,18 @@ const AdminMovieManagement = () => {
         <thead>
           <tr>
             <th>Tên phim</th>
-            <th>Đạo diễn</th>
-            <th>Năm sản xuất</th>
-            <th>Thao tác</th>
+            <th>Mô tả phim</th>
+            <th>Thể loại</th>
+            <th>Ngày khởi chiếu</th>
+            <th>Chọn poster phim</th>
           </tr>
         </thead>
         <tbody>
           {movies.map((movie) => (
             <tr key={movie.id}>
-              <td>{movie.title}</td>
-              <td>{movie.director}</td>
-              <td>{movie.year}</td>
+              <td>{movie.name}</td>
+              <td>{movie.description}</td>
+              <td>{movie.release_date}</td>
               <td>
                 <Button onClick={() => handleEdit(movie)} className="mr-2">
                   <Pencil className="mr-1" /> Sửa
@@ -125,26 +129,26 @@ const AdminMovieManagement = () => {
             <Form.Label>Tên phim</Form.Label>
             <Form.Control
               type="text"
-              name="title"
-              defaultValue={currentMovie?.title}
+              name="Tên phim"
+              defaultValue={currentMovie?.name}
               required
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Đạo diễn</Form.Label>
+            <Form.Label>Ngày khởi chiếu</Form.Label>
             <Form.Control
               type="text"
-              name="director"
-              defaultValue={currentMovie?.director}
+              name="Ngày khởi chiếu"
+              defaultValue={currentMovie?.release_date}
               required
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Năm sản xuất</Form.Label>
+            <Form.Label>Thể loại</Form.Label>
             <Form.Control
-              type="number"
-              name="year"
-              defaultValue={currentMovie?.year}
+              type="select"
+              name="Thể lọai"
+              defaultValue={currentMovie?.genre}
               required
             />
           </Form.Group>

@@ -1,70 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import './style.scss';
+// import React, { useState, useEffect } from 'react';
+// import { format, addDays } from 'date-fns';
+// import { ChevronLeft, ChevronRight } from 'lucide-react';
+// import APIs, { endpoints } from 'configs/APIs';
+// import './style.scss';
+// import { ChevronDown } from 'lucide-react';
 
-const MovieTheaterPage = () => {
-    const [theaters, setTheaters] = useState([]);
-    const [selectedTheater, setSelectedTheater] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [movies, setMovies] = useState([]);
 
-    useEffect(() => {
-        // Fetch movies based on selectedCity, selectedTheater, and selectedDate
-        // Update movies state
-    }, [selectedCity, selectedTheater, selectedDate]);
+// const MovieShowtimes = ({ cinemaHallId }) => {
+//     const [selectedCinemaHall, setselectedCinemaHall] = useState([]);
+//     const [cinema_hall, setcinema_hall] = useState([]);
+//     const [movies, setMovies] = useState([]);
+//     const [showtime, setShowtime] = useState([]);
+//     const [isOpen, setIsOpen] = useState(false);
+//     const [error, setError] = useState(null);  
 
-    return (
-        <div className="movie-theater-page">
-        <header className="header">
-            <h1>{selectedTheater}</h1>
-            <p>Địa chỉ: 116 Nguyễn Du, Quận 1, Tp.HCM</p>
-            <p>Hotline: 1900 2224</p>
-        </header>
-        
-        <div className="theater-selector">
-            <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
-            <option>TP Hồ Chí Minh</option>
-            {/* Add more cities */}
-            </select>
-            <select value={selectedTheater} onChange={(e) => setSelectedTheater(e.target.value)}>
-            <option>Galaxy Nguyễn Du</option>
-            {/* Add more theaters */}
-            </select>
-        </div>
+//     useEffect(() => {
+//         const fetchCinemas = async () => {
+//             try {
+//                 setIsLoading(true);
+//                 const response = await APIs.get(endpoints['api/cinema_hall']); // Adjust the URL as needed
+//                 if (!response.ok) {
+//                 throw new Error('Failed to fetch cinema halls');
+//                 }
+//                 const data = await response.json();
+//                 setcinema_hall(data);
+//                 setselectedCinemaHall(data[0]); // Set the first cinema as default
+//             } catch (err) {
+//                 setError(err.message);
+//             } finally {
+//                 setIsLoading(false);
+//             }
+//         }
 
-        <section className="movie-section">
-            <h2>PHIM</h2>
-            <DateSelector selectedDate={selectedDate} onDateChange={setSelectedDate} />
-            <MovieList movies={movies} />
-        </section>
-        </div>
-    );
-    };
+//         fetchCinemas();
+//     }, []);
 
-    const DateSelector = ({ selectedDate, onDateChange }) => {
-    // Implement date selection component
-    };
+//     if (isLoading) return <div>Loading...</div>;
+//     if (error) return <div>Error: {error}</div>;
 
-    const MovieList = ({ movies }) => {
-    return (
-        <div className="movie-list">
-        {movies.map(movie => (
-            <MovieCard key={movie.id} movie={movie} />
-        ))}
-        </div>
-    );
-    };
 
-    const MovieCard = ({ movie }) => {
-    return (
-        <div className="movie-card">
-        <img src={movie.poster} alt={movie.title} />
-        <div className="movie-info">
-            <h3>{movie.title}</h3>
-            <span className="rating">{movie.rating}</span>
-            <span className="age-rating">{movie.ageRating}</span>
-        </div>
-        </div>
-    );
-};
+//     const handleMovieClick = (movie) => {
+//     setSelectedMovie(movie.id === selectedMovie?.id ? null : movie);
+//     };
 
-export default MovieTheaterPage;
+//     return (
+//         <div className="cinema-select-container">
+//       <div 
+//         className="cinema-select-header"
+//         onClick={() => setIsOpen(!isOpen)}
+//       >
+//         <span>{selectedCinemaHall ? selectedCinemaHall.name : 'Select a cinema'}</span>
+//         <ChevronDown className={`chevron ${isOpen ? 'open' : ''}`} />
+//       </div>
+//       {isOpen && (
+//         <ul className="cinema-select-options">
+//           {cinema_hall.map((cinema_hall) => (
+//             <li 
+//               key={cinema_hall.id}
+//               onClick={() => {
+//                 setselectedCinemaHall(cinema_hall);
+//                 setIsOpen(false);
+//               }}
+//               className={cinema_hall.id === selectedCinemaHall?.id ? 'selected' : ''}
+//             >
+//               {cinema_hall.name}
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+
+//     );
+// };
+
+// export default MovieShowtimes;

@@ -1,27 +1,28 @@
 import APIs, { authAPI,endpoints } from 'configs/APIs';
 import "./style.scss";
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 // import { Alert, AlertDescription } from '@/components/ui/alert';
-import cookie from "react-cookies";
-// import { MyDispatchContext} from 'configs/MyContext'
+import cookie from 'react-cookies';
+import { MyDispatchContext} from 'configs/MyContext'
 
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useContext(MyDispatchContext);
 
     const login = async () => {
         setLoading(true);
         setError('');
         try {
             const res = await APIs.post(endpoints['login'], {
-                'username': email,
+                'username': username,
                 'password': password,
                 // 'client_id': process.env.REACT_APP_CLIENT_ID,
                 // 'client_secret': process.env.REACT_APP_CLIENT_SECRET,
@@ -35,17 +36,24 @@ const Login = () => {
             });
 
             console.log('Login response:', res);
+            // console.info(res.data);
+            // AsyncStorage.setItem('token', res.data.access_token);
     
             if (res.status === 200 && res.data.access_token) {
                 cookie.save("token", res.data.access_token);
                 try {
-                    const userdata = await authAPI().get(endpoints['current_user']);
+                    const userdata = await authAPI(res.data.access_token).get(endpoints['current_user']);
+                    console.info(userdata.data);
                     cookie.save('user', userdata.data);
-                    // dispatch({
-                    //     "type": "login",
-                    //     "payload": userdata.data
-                    // });
-                    navigate("/");
+                    dispatch({
+                        "type": "login",
+                        "payload": userdata.data
+                    });
+                    if (userdata.data.is_staff || userdata.data.is_superuser) {
+                        navigate("/admin_movie"); // Chuyển hướng đến trang quản lý phim
+                    } else {
+                        navigate("/"); // Chuyển hướng đến trang chủ cho người dùng thông thường
+                    }
                 } catch (userError) {
                     console.error("Lỗi khi lấy thông tin người dùng:", userError);
                     setError("Đăng nhập thành công nhưng không thể lấy thông tin người dùng.");
@@ -56,7 +64,7 @@ const Login = () => {
         } catch (ex) {
             console.error("Lỗi tại màn hình đăng nhập:", ex);
             if (ex.response) {
-                console.log('Login attempt with:', { email, password });
+                console.log('Login attempt with:', { username, password });
                 handleLoginError(ex.response.status);
             } else {
                 setError("Lỗi kết nối, vui lòng thử lại sau.");
@@ -96,13 +104,13 @@ const Login = () => {
         )} */}
         <form className="login-form" onSubmit={handleSubmit}>
         <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Tên đăng nhập</label>
             <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Nhập Email"
+            type="username"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Nhập tên đăng nhập"
             required
             />
         </div>
@@ -135,7 +143,7 @@ const Login = () => {
         </div>
         <div className="signup-link">
         <p>Bạn chưa có tài khoản?</p>
-        <a href="/register">Đăng ký</a>
+        <Link to="/dang_ky" className="login-link">Đăng ký</Link>
         </div>
     </div>
     );
@@ -143,3 +151,4 @@ const Login = () => {
 
 
 export default Login;
+

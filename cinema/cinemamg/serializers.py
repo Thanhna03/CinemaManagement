@@ -35,6 +35,16 @@ class ShowtimeSerializer(serializers.ModelSerializer):
         fields = ['id', 'showtime_date', 'movie', 'cinemaHall']
 
 class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'email', 'avatar']
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+        }
+
     #ham bam mat khau
     def create(self, validated_data):
         data = validated_data.copy()
@@ -52,14 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
         return user
 
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'email', 'avatar']
-        extra_kwargs = {
-            'password': {
-                'write_only': True
-            },
-        }
+
 
 
 class CinemaHallSerializer(serializers.ModelSerializer):

@@ -17,9 +17,16 @@ const Signup = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const nav = useNavigate();
 
-    const closeModal = async () => {
-        setShowSuccessModal(false);
-        nav('/');
+    // const closeModal = async () => {
+    //     setShowSuccessModal(false);
+    //     nav('/');
+    // }
+
+    const closeModal = () => {
+        setShowSuccessModal(false);  // Ẩn modal
+        setTimeout(() => {
+            nav('/');  // Điều hướng sau khi modal đã đóng
+        }, 300);  // Trì hoãn 300ms trước khi điều hướng
     }
 
     const handleSignup = async (e) => {
@@ -152,10 +159,10 @@ const Signup = () => {
             </form>
             <div className="login-link-container">
                 <p>Bạn đã có tài khoản?</p>
-                <Link to="/login" className="login-link">Đăng nhập</Link>
+                <Link to="/dang_nhap" className="login-link">Đăng nhập</Link>
             </div>
 
-            <Modal show={showSuccessModal} onHide={closeModal}>
+            <Modal show={showSuccessModal} onHide={closeModal} centered className="registration-success-modal">
                 <Modal.Header closeButton>
                     <Modal.Title>Đăng ký thành công</Modal.Title>
                 </Modal.Header>
