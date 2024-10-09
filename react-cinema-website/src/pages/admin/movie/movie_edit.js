@@ -1,43 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import APIs, { endpoints } from 'configs/APIs';
 import "./style.scss";
-import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { Table, Button, Form } from 'react-bootstrap';
 import { Pencil, Trash2, PlusCircle } from 'lucide-react';
 
 const AdminMovieManagement = () => {
   const [movies, setMovies] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentMovie, setCurrentMovie] = useState(null);
   const navigate = useNavigate();
+  const [genres, setGenres] = useState([]);
 
   useEffect(() => {
-    checkAdminStatus();
-    if (isAdmin) {
-      fetchMovies();
-    }
-  }, [isAdmin]);
-
-  const checkAdminStatus = async () => {
-    try {
-      const response = await axios.get('/api/users/check_admin/');
-      setIsAdmin(response.data.isAdmin);
-      if (!response.data.isAdmin) {
-        navigate('/dang_nhap'); // Chuyển hướng nếu không phải admin
-      }
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-      navigate('/dang_nhap');
-    }
-  };
+    fetchMovies();
+    fetchGenres();
+  }, []);
 
   const fetchMovies = async () => {
     try {
-      const response = await axios.get('/movies');
-      setMovies(response.data);
-    } catch (error) {
-      console.error('Error fetching movies:', error);
+      let res = await APIs.get(endpoints['movie']);
+      console.log("API Response:", res.data);
+      setMovies(res.data.results);
+    } catch (ex) {
+      console.error("Failed to fetch movies:", ex);
+    }
+  };
+
+  const fetchGenres = async () => {
+    try {
+      let res = await APIs.get(endpoints['genres']); 
+      setGenres(res.data);
+    } catch (ex) {
+      console.error("Failed to fetch genres:", ex);
     }
   };
 
@@ -54,7 +49,7 @@ const AdminMovieManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa phim này?')) {
       try {
-        await axios.delete(`/movie/${id}/`);
+        await APIs.delete(endpoints['movie_delete'](id));
         fetchMovies();
       } catch (error) {
         console.error('Error deleting movie:', error);
@@ -65,13 +60,20 @@ const AdminMovieManagement = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const movieData = Object.fromEntries(formData.entries());
+
+    const selectedGenres = Array.from(event.target.genre.selectedOptions, option => option.value);
+    formData.delete('genre');
+    selectedGenres.forEach(genre => formData.append('genre', genre));
 
     try {
       if (currentMovie) {
-        await axios.put(`/movie/${currentMovie.id}/`, movieData);
+        await APIs.put(endpoints['movie_update'](currentMovie.id), formData);
       } else {
-        await axios.post('/movie/', movieData);
+        await APIs.post(endpoints['movie_create'], formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
       }
       setShowModal(false);
       fetchMovies();
@@ -79,10 +81,6 @@ const AdminMovieManagement = () => {
       console.error('Error saving movie:', error);
     }
   };
-
-  if (!isAdmin) {
-    return <div>Đang kiểm tra quyền truy cập...</div>;
-  }
 
   return (
     <div className="admin-movie-management">
@@ -95,17 +93,16 @@ const AdminMovieManagement = () => {
         <thead>
           <tr>
             <th>Tên phim</th>
-            <th>Mô tả phim</th>
             <th>Thể loại</th>
             <th>Ngày khởi chiếu</th>
-            <th>Chọn poster phim</th>
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
           {movies.map((movie) => (
             <tr key={movie.id}>
               <td>{movie.name}</td>
-              <td>{movie.description}</td>
+              <td>{movie.genre_names.join(", ")}</td>
               <td>{movie.release_date}</td>
               <td>
                 <Button onClick={() => handleEdit(movie)} className="mr-2">
@@ -120,43 +117,77 @@ const AdminMovieManagement = () => {
         </tbody>
       </Table>
 
-      <Modal show={showModal} onClose={() => setShowModal(false)}>
-        <Form onSubmit={handleSubmit}>
-          <h2 className="text-xl font-semibold mb-4">
-            {currentMovie ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
-          </h2>
-          <Form.Group>
-            <Form.Label>Tên phim</Form.Label>
-            <Form.Control
-              type="text"
-              name="Tên phim"
-              defaultValue={currentMovie?.name}
-              required
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Ngày khởi chiếu</Form.Label>
-            <Form.Control
-              type="text"
-              name="Ngày khởi chiếu"
-              defaultValue={currentMovie?.release_date}
-              required
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Thể loại</Form.Label>
-            <Form.Control
-              type="select"
-              name="Thể lọai"
-              defaultValue={currentMovie?.genre}
-              required
-            />
-          </Form.Group>
-          <Button type="submit" className="mt-4">
-            {currentMovie ? 'Cập nhật' : 'Thêm mới'}
-          </Button>
-        </Form>
-      </Modal>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-popup">
+            <div className="modal-header">
+              <h2>{currentMovie ? 'Chỉnh sửa phim' : 'Thêm phim mới'}</h2>
+              <button className="close-button" onClick={() => setShowModal(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="form-group">
+                  <Form.Label>Tên phim</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    defaultValue={currentMovie?.name}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="form-group">
+                  <Form.Label>Mô tả phim</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    name="description"
+                    defaultValue={currentMovie?.description}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="form-group">
+                  <Form.Label>Thể loại</Form.Label>
+                  <select
+                    name="genre"
+                    multiple
+                    required
+                    defaultValue={currentMovie?.genre_ids || []}
+                    className="form-control"
+                  >
+                    {genres.map(genre => (
+                      <option key={genre.id} value={genre.id}>
+                        {genre.name}
+                      </option>
+                    ))}
+                  </select>
+                </Form.Group>
+                <Form.Group className="form-group">
+                  <Form.Label>Ngày khởi chiếu</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="release_date"
+                    defaultValue={currentMovie?.release_date}
+                    required
+                  />
+                </Form.Group>
+                {!currentMovie && (
+                  <Form.Group className="form-group">
+                    <Form.Label>Poster phim</Form.Label>
+                    <Form.Control
+                      type="file"
+                      name="poster"
+                      accept="image/*"
+                      required
+                    />
+                  </Form.Group>
+                )}
+                <Button type="submit" className="submit-button">
+                  {currentMovie ? 'Cập nhật' : 'Thêm mới'}
+                </Button>
+              </Form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

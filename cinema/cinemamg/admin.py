@@ -60,6 +60,10 @@ class MyBooking(admin.ModelAdmin):
 class MyReview(admin.ModelAdmin):
     list_display = ['rating', 'movie', 'user']
 
+# class MyGenre(admin.ModelAdmin):
+#     list_display = ['id', 'genre']
+
+
 admin.site.register(User, MyUser)
 admin.site.register(Genre)
 admin.site.register(Movie, MyMovie)

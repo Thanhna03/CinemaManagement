@@ -9,6 +9,7 @@
     justify-content: flex-end;
     align-items: center;
     padding: 10px 0 13px;
+            
 
     ul {
         display: flex;
@@ -24,10 +25,11 @@
         li:last-child {
             cursor: pointer;
             margin-left: 10px;
-
+            
             span {
                 font-size: 20px;
                 margin-left: 2px;
+                text-decoration: none;
             }
         }
 

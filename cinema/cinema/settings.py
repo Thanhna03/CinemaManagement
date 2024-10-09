@@ -25,6 +25,7 @@ AUTH_USER_MODEL = 'cinemamg.User'
 
 CKEDITOR_UPLOAD_PATH = 'ckeditor/images/'
 
+
 # Application definition
 
 cloudinary.config(
@@ -67,7 +68,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'cinema.urls'
@@ -77,6 +77,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 
 TEMPLATES = [
@@ -151,5 +156,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CLIENT_ID='ieYXizKVaptkqlAEmh5QD0QGEDBR6mbTYx92siJY'
-# CLIENT_SECRET='LNtjKjG2SMklsMnr55SFkqm3Lxoh98sPnY1gIwcVg5ZofVOwnGvmfkyArMTLzBS0WARxF62u0v5Kgb9HFiFkpv74O29t7RnGWqWsjnD5uW6BJcpYn5nDkEKsNpYPmVrt'
+# CLIENT_ID='4SZjiVJQiZb5RRgvGdFJKigmmSVw3lR3KXDznR7W'
+# CLIENT_SECRET='vj1SWDpotikv8feds7HL4kENgpHnAEv8MvIRFJyAzZgnVZATT6boanguGj9zA4PlKXAVS7SCn43qXm7uiaMtGjgDCxM9d5wk7oBhZmDoYuQ99b5IMmJpkQ7Avf2l3wWt'

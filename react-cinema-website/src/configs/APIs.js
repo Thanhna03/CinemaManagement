@@ -12,7 +12,10 @@
         'current_user': '/users/current-user/' ,
         'showtime': '/api/showtime/',
         'cinema_hall': '/api/cinema_hall/',
-
+        'movie_create': '/api/movie/',
+        'movie_update': (id) => `/api/movie/${id}/`,
+        'movie_delete': (id) => `/api/movie/${id}/`,
+        'genres': '/api/genres/',
 
     };  
 
@@ -33,3 +36,5 @@
     export default axios.create({
         baseURL: BASE_URL
     });
+
+

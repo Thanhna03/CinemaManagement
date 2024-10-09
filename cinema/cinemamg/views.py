@@ -21,7 +21,7 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
     queryset = Movie.objects.all().order_by('name')
     serializer_class = serializers.MovieSerializer
     pagination_class = paginators.MoviePaginator
-    permission_classes = [IsSuperuserOrReadOnly]
+    # permission_classes = [IsSuperuserOrReadOnly]
 
 
     def get_queryset(self):
@@ -41,10 +41,33 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
         review = self.get_object().review.order_by('-created_date')
         return Response(serializers.ReviewSerializer(review, many=True).data)
 
+    # def create(self, request, *args, **kwargs):
+    #     if not request.user.is_superuser:
+    #         return Response({"detail": "Only superusers can add movies."},
+    #                         status=status.HTTP_403_FORBIDDEN)
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid():
+    #         movie = serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # def update(self, request, *args, **kwargs):
+    #     if not request.user.is_superuser:
+    #         return Response({"detail": "Only superusers can update movies."},
+    #                         status=status.HTTP_403_FORBIDDEN)
+    #     return super().update(request, *args, **kwargs)
+    #
+    # def destroy(self, request, *args, **kwargs):
+    #     if not request.user.is_superuser:
+    #         return Response({"detail": "Only superusers can delete movies."},
+    #                         status=status.HTTP_403_FORBIDDEN)
+    #     movie = self.get_object()
+    #     movie.delete()
+    #     return Response({
+    #         'message': 'Movie deleted successfully'
+    #     }, status=status.HTTP_204_NO_CONTENT)
+
     def create(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can add movies."},
-                            status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             movie = serializer.save()
@@ -52,15 +75,9 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can update movies."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can delete movies."},
-                            status=status.HTTP_403_FORBIDDEN)
         movie = self.get_object()
         movie.delete()
         return Response({
@@ -128,11 +145,16 @@ class GenreViewSet(viewsets.ModelViewSet, generics.CreateAPIView,
     serializer_class = serializers.GenreSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:  # Cho phép tất cả người dùng đã đăng nhập xem thể loại
-            permission_classes = [IsAuthenticated]
-        else:  # Chỉ admin mới có quyền thêm, sửa, xóa
-            permission_classes = [IsAdminUser]
-        return [permission() for permission in permission_classes]
+        # dành cho phân quyền admin
+
+        # if self.action in ['list', 'retrieve']:  # Cho phép tất cả người dùng đã đăng nhập xem thể loại
+        #     permission_classes = [IsAuthenticated]
+        # else:  # Chỉ admin mới có quyền thêm, sửa, xóa
+        #     permission_classes = [IsAdminUser]
+        # return [permission() for permission in permission_classes]
+
+        return [permissions.AllowAny()]
+
 
 class CinemaHallViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = CinemaHall.objects.filter(active=True).all()

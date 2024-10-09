@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useContext  } from "react";
 import {memo} from "react";
-// import { css } from "@emotion/react";
 import "./style.scss";
 import { AiFillFacebook, AiFillInstagram, AiOutlineUser, AiOutlineMail } from "react-icons/ai";
 import {Link} from "react-router-dom";
 import { Router } from "utils/router";
 // import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css';
+import { MyUserContext } from "configs/MyContext";
 
 
 
@@ -63,6 +63,8 @@ const Header = ({ showCarousel = true }) => {
         return () => clearInterval(interval); // Clear interval when component unmounts
     }, []);
 
+    const user = useContext(MyUserContext);
+
     // const responsive = {
     //     superLargeDesktop: {
     //       breakpoint: { max: 4000, min: 3000 },
@@ -106,11 +108,17 @@ const Header = ({ showCarousel = true }) => {
                                     </Link>
                                 </li>
                                 <li>
+                                {user && user.username ? (
+                                    <Link to={Router.user.PROFILE}>
+                                        <AiOutlineUser />
+                                        <span>{user.username}</span>
+                                    </Link>
+                                    ) : (
                                     <Link to={"/dang_nhap"}>
                                         <AiOutlineUser />
-                                        <a>Sigin</a>
+                                        <a>Sign In</a>
                                     </Link>
-                                    
+                                    )}
                                 </li>
 
                             </ul>
@@ -175,15 +183,6 @@ const Header = ({ showCarousel = true }) => {
                  </div>
              </div>
             )}
-           
-           {/* <div>
-            <Carousel responsive={responsive}>
-                <div>item 1</div>
-                <div>item 2</div>
-                <div>item 2</div>
-                <div>item 2</div>
-            </Carousel>;
-           </div> */}
         </>
     )
 };
