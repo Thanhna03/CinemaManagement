@@ -9,9 +9,11 @@ import MovieUpcoming from './pages/users/Movie/movie_upcoming';
 import Login from "./pages/permis/login";
 import Signup from "./pages/permis/signup";
 import Movie_Management from "./pages/admin/movie/movie_edit";
+import USER_MANAGE from "./pages/admin/user/user_edit";
 import Cinema_Hall from "./pages/users/CinemaHall/CinemaHall";
 import { MyDispatchContext, MyUserContext } from 'configs/MyContext';
 import MyUserReducer from "configs/Reducers";
+
 
 const userRoueter = [
     {
@@ -45,6 +47,10 @@ const userRoueter = [
     {
         path: Router.user.CINEMA_HALL,
         element: <Cinema_Hall />,
+    },
+    {
+        path: Router.admin.USER_MANAGE,
+        element: <USER_MANAGE />,
     },
 ];
 

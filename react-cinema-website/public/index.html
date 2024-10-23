@@ -10,6 +10,14 @@
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <script src="https://kit.fontawesome.com/9808de19ba.js" crossorigin="anonymous"></script>
+  <script>
+    window.process = {
+      env: {
+        NODE_ENV: 'development',
+        REACT_APP_API_URL: 'http://127.0.0.1:8000'
+      }
+    };
+  </script>
   <title>CINEMA</title>
 </head>
 

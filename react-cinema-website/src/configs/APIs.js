@@ -2,11 +2,13 @@
     import cookie from "react-cookies";
 
     // export const BASE_URL = 'http://192.168.1.233:8000/';
-    export const BASE_URL = 'http://127.0.0.1:8000/';
+    // export const BASE_URL = 'http://127.0.0.1:8000/';
+    export const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
 
 
     export const endpoints = {
         'movie': '/api/movie/',
+        'user': '/api/users/',
         'signup': '/api/users/',
         'login': '/o/token/',
         'current_user': '/users/current-user/' ,
@@ -16,6 +18,8 @@
         'movie_update': (id) => `/api/movie/${id}/`,
         'movie_delete': (id) => `/api/movie/${id}/`,
         'genres': '/api/genres/',
+        'users_update': (id) => `/api/users/${id}/`,
+        'users_delete': (id) => `/api/users/${id}/`,
 
     };  
 

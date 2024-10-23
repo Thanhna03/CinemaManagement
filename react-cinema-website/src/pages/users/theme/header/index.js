@@ -1,14 +1,13 @@
 
-import React, { useState, useEffect, useContext  } from "react";
+import React, { useState, useEffect } from "react";
 import {memo} from "react";
 import "./style.scss";
 import { AiFillFacebook, AiFillInstagram, AiOutlineUser, AiOutlineMail } from "react-icons/ai";
 import {Link} from "react-router-dom";
 import { Router } from "utils/router";
-// import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css';
-import { MyUserContext } from "configs/MyContext";
-
+import cookie from 'react-cookies';
+import { authAPI, endpoints } from 'configs/APIs';
 
 
 
@@ -63,26 +62,26 @@ const Header = ({ showCarousel = true }) => {
         return () => clearInterval(interval); // Clear interval when component unmounts
     }, []);
 
-    const user = useContext(MyUserContext);
+    // const user = useContext(MyUserContext);
+    const [user, setUser] = useState(null);
 
-    // const responsive = {
-    //     superLargeDesktop: {
-    //       breakpoint: { max: 4000, min: 3000 },
-    //       items: 5
-    //     },
-    //     desktop: {
-    //       breakpoint: { max: 3000, min: 1024 },
-    //       items: 3
-    //     },
-    //     tablet: {
-    //       breakpoint: { max: 1024, min: 464 },
-    //       items: 2
-    //     },
-    //     mobile: {
-    //       breakpoint: { max: 464, min: 0 },
-    //       items: 1
-    //     }
-    //   };
+    useEffect(() => {
+        const loadCurrentUser = async () => {
+          try {
+            const token = cookie.load('token');
+            if (token) {
+                const api = authAPI();
+                let res = await api.get(endpoints['current_user']);
+                console.log("Current user data:", res.data);
+                setUser(res.data);
+            }
+          } catch (ex) {
+            console.error("Error loading current user:", ex);
+          }
+        };
+    
+        loadCurrentUser();
+    }, []);
 
 
     return (
@@ -108,19 +107,18 @@ const Header = ({ showCarousel = true }) => {
                                     </Link>
                                 </li>
                                 <li>
-                                {user && user.username ? (
-                                    <Link to={Router.user.PROFILE}>
-                                        <AiOutlineUser />
-                                        <span>{user.username}</span>
+                                {user ? (
+                                    <Link to={""}>  
+                                        <AiOutlineUser className="mr-2" />
+                                        <span>Xin chào, {user.username}</span>
                                     </Link>
-                                    ) : (
+                                ) : (
                                     <Link to={"/dang_nhap"}>
-                                        <AiOutlineUser />
-                                        <a>Sign In</a>
+                                        <AiOutlineUser className="mr-2" />
+                                        <span>Sign In</span> 
                                     </Link>
-                                    )}
+                                )}
                                 </li>
-
                             </ul>
                         </div>
                     </div>

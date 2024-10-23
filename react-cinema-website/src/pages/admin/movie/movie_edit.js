@@ -193,3 +193,9 @@ const AdminMovieManagement = () => {
 };
 
 export default AdminMovieManagement;
+
+
+
+
+
+

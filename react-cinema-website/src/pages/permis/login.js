@@ -4,6 +4,7 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { MyDispatchContext } from 'configs/MyContext';
+
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
@@ -14,7 +15,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useContext(MyDispatchContext);
-    const [user, setUser] = React.useState({});
+    
     
 
     const login = useCallback(async () => {
@@ -115,11 +116,7 @@ const Login = () => {
         }
     }, [message]);
 
-    // const updateState = (field, value) => {
-    //     setUser(current => {
-    //         return { ...current, [field]: value }
-    //     })
-    // }
+       
 
     return (
         <div className="login-container">

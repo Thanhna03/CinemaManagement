@@ -17,7 +17,7 @@ export const Router = {
 
     admin: {
         MOVIE_MANAGE: "/admin_movie",
-        
+        USER_MANAGE: "/admin_user",
     }
 
 
