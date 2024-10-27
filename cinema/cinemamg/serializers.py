@@ -32,7 +32,7 @@ class MovieSerializer(serializers.ModelSerializer):
 class ShowtimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Showtime
-        fields = ['id', 'showtime_date', 'movie', 'cinemaHall']
+        fields = ['id', 'showtime_date','start_time', 'end_time', 'movie', 'cinemaHall']
 
 class UserSerializer(serializers.ModelSerializer):
 

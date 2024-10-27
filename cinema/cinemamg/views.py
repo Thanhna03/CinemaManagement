@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets, generics, permissions
 from rest_framework.response import Response
 from rest_framework import status, parsers
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 class IsSuperuserOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -87,7 +87,8 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
 class ShowtimeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = Showtime.objects.filter(active=True).all()
     serializer_class = serializers.ShowtimeSerializer
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
 
 class UserViewSet(viewsets.ModelViewSet, generics.UpdateAPIView):
@@ -159,7 +160,7 @@ class GenreViewSet(viewsets.ModelViewSet, generics.CreateAPIView,
 class CinemaHallViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = CinemaHall.objects.filter(active=True).all()
     serializer_class = serializers.CinemaHallSerializer
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
 class ReviewViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView, generics.DestroyAPIView):
     queryset = Review.objects.filter(active=True).all()

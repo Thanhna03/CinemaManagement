@@ -62,7 +62,7 @@ class CinemaHall(BaseModel):
         return f"{self.name} - {self.location}"
 
 class Showtime(BaseModel):
-    showtime_date = models.DateTimeField() #ngay chieu
+    showtime_date = models.DateField() #ngay chieu
     start_time = models.TimeField() #gio bat dau chieu
     end_time = models.TimeField()  # gio ket thuc
     movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
