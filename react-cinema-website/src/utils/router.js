@@ -5,7 +5,6 @@ export const Router = {
         MOVIE_UPCOMING: "/phim_sap_chieu",
         CINEMA_HALL: "/rap",
         PROMOTION: "/khuyen_mai",
-
     },
 
     permis: {
@@ -18,6 +17,12 @@ export const Router = {
     admin: {
         MOVIE_MANAGE: "/admin_movie",
         USER_MANAGE: "/admin_user",
+        SHOWTIME_MANAGE: "/admin_showtime",
+    },
+
+    booking: {
+        USER_BOOKING: "/booking/:showtimeId",
+        ADMIN_BOOKING: "/admin_booking",
     }
 
 

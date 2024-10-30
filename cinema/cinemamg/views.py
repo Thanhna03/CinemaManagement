@@ -84,12 +84,12 @@ class MovieViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVie
             'message': 'Movie deleted successfully'
         }, status=status.HTTP_204_NO_CONTENT)
 
-class ShowtimeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveUpdateDestroyAPIView):
-    queryset = Showtime.objects.filter(active=True).all()
-    serializer_class = serializers.ShowtimeSerializer
-    # permission_classes = [permissions.IsAdminUser]
-    permission_classes = [permissions.AllowAny]
 
+class ShowtimeViewSet(viewsets.ModelViewSet):
+    queryset = Showtime.objects.filter(active=True)
+    serializer_class = serializers.ShowtimeSerializer
+    permission_classes = [permissions.AllowAny]
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
 class UserViewSet(viewsets.ModelViewSet, generics.UpdateAPIView):
     queryset = User.objects.filter(is_active=True).all()
@@ -216,7 +216,7 @@ class PromotionViewSet(viewsets.ModelViewSet):
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = serializers.BookingSerializer
-    permission_classes = [IsAuthenticated] #alowed cho user(phai co tai khoan)
+    # permission_classes = [IsAuthenticated] #alowed cho user(phai co tai khoan)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

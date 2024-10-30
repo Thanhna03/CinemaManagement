@@ -20,6 +20,11 @@
         'genres': '/api/genres/',
         'users_update': (id) => `/api/users/${id}/`,
         'users_delete': (id) => `/api/users/${id}/`,
+        'showtime_update': (id) => `/api/showtime/${id}/`,
+        'showtime_delete': (id) => `/api/showtime/${id}/`,
+        'showtime_create': '/api/showtime/',
+        'booking': '/api/booking/',
+
 
     };  
 

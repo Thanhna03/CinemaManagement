@@ -1,18 +1,20 @@
-
-import React, { useState, useEffect } from "react";
-import {memo} from "react";
+import React, { useContext, useEffect } from "react";
+import { memo } from "react";
 import "./style.scss";
 import { AiFillFacebook, AiFillInstagram, AiOutlineUser, AiOutlineMail } from "react-icons/ai";
-import {Link} from "react-router-dom";
+import {AiOutlineSetting, AiOutlineHistory,AiOutlineLogout, AiOutlineVideoCamera,AiOutlineCalendar,AiOutlineSchedule } from "react-icons/ai";
+import { Link, useNavigate } from "react-router-dom";
 import { Router } from "utils/router";
 import 'react-multi-carousel/lib/styles.css';
 import cookie from 'react-cookies';
-import { authAPI, endpoints } from 'configs/APIs';
-
-
+import { MyUserContext, MyDispatchContext } from 'configs/MyContext';
 
 const Header = ({ showCarousel = true }) => {
-    const [menu] = useState([
+    const user = useContext(MyUserContext);
+    const dispatch = useContext(MyDispatchContext);
+    const navigate = useNavigate();
+
+    const [menu] = React.useState([
         {
             name: "Trang chủ",
             path: Router.user.HOME,
@@ -42,7 +44,7 @@ const Header = ({ showCarousel = true }) => {
         }
     ]);
 
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = React.useState(0);
     const images = [
         { src: "https://cdn.galaxycine.vn/media/2024/8/13/transformers-2048_1723544458749.jpg", alt: "Placeholder 1" },
         { src: "https://cdn.galaxycine.vn/media/2024/9/12/look-back-3_1726128134652.jpg", alt: "Placeholder 2" },
@@ -57,32 +59,29 @@ const Header = ({ showCarousel = true }) => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         const interval = setInterval(nextSlide, 3000);
-        return () => clearInterval(interval); // Clear interval when component unmounts
+        return () => clearInterval(interval);
     }, []);
-
-    // const user = useContext(MyUserContext);
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const loadCurrentUser = async () => {
-          try {
-            const token = cookie.load('token');
-            if (token) {
-                const api = authAPI();
-                let res = await api.get(endpoints['current_user']);
-                console.log("Current user data:", res.data);
-                setUser(res.data);
-            }
-          } catch (ex) {
-            console.error("Error loading current user:", ex);
-          }
-        };
-    
-        loadCurrentUser();
-    }, []);
+        console.log("Header - User context value:", user);
+        if (user) {
+            console.log("User properties:", Object.keys(user));
+            console.log("Username:", user.username);
+        }
+    }, [user]);
 
+    const handleLogout = () => {
+        if (dispatch) {
+            dispatch({ type: "logout" });
+            cookie.remove('token');
+            cookie.remove('user');
+            navigate('/dang_nhap');
+        }
+    };
+
+    const isAdmin = user?.is_staff || user?.is_superuser;
 
     return (
         <>
@@ -108,10 +107,52 @@ const Header = ({ showCarousel = true }) => {
                                 </li>
                                 <li>
                                 {user ? (
-                                    <Link to={""}>  
-                                        <AiOutlineUser className="mr-2" />
-                                        <span>Xin chào, {user.username}</span>
-                                    </Link>
+                        <div className="user-menu">
+                            <Link to="#">
+                                <AiOutlineUser className="mr-2" />
+                                <span>Xin chào, {user.username}</span>
+                            </Link>
+                            <div className="user-dropdown">
+                                {isAdmin ? (
+                                    // Menu cho Admin
+                                    <>
+                                        <Link to="/admin_movie" className="dropdown-item">
+                                            <AiOutlineVideoCamera />
+                                            <span>Quản lý Phim</span>
+                                        </Link>
+                                        <Link to="/admin/booking" className="dropdown-item">
+                                            <AiOutlineCalendar />
+                                            <span>Quản lý Đặt vé</span>
+                                        </Link>
+                                        <Link to="/admin/showtime" className="dropdown-item">
+                                            <AiOutlineSchedule />
+                                            <span>Quản lý Lịch chiếu</span>
+                                        </Link>
+                                    </>
+                                ) : (
+                                    // Menu cho User thường
+                                    <>
+                                        <Link to="/profile" className="dropdown-item">
+                                            <AiOutlineUser />
+                                            <span>Thông tin cá nhân</span>
+                                        </Link>
+                                        <Link to="/booking-history" className="dropdown-item">
+                                            <AiOutlineHistory />
+                                            <span>Lịch sử đặt vé</span>
+                                        </Link>
+                                        <Link to="/settings" className="dropdown-item">
+                                            <AiOutlineSetting />
+                                            <span>Cài đặt</span>
+                                        </Link>
+                                    </>
+                                )}
+                                <hr />
+                                <button onClick={handleLogout} className="logout-button">
+                                    <AiOutlineLogout />
+                                    <span>Đăng xuất</span>
+                                </button>
+                            </div>
+                            </div>
                                 ) : (
                                     <Link to={"/dang_nhap"}>
                                         <AiOutlineUser className="mr-2" />
@@ -123,7 +164,6 @@ const Header = ({ showCarousel = true }) => {
                         </div>
                     </div>
                 </div>
-
             </div>
             <div className="container">
                 <div className="row">
@@ -182,8 +222,7 @@ const Header = ({ showCarousel = true }) => {
              </div>
             )}
         </>
-    )
+    );
 };
-
 
 export default memo(Header);

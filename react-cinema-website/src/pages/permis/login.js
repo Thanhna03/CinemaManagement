@@ -1,4 +1,5 @@
 import APIs, { authAPI, endpoints } from 'configs/APIs';
+import cookie from "react-cookies";
 import "./style.scss";
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -22,18 +23,23 @@ const Login = () => {
         setLoading(true);
         setMessage({ type: '', content: '' });
         try {
-            let res = await APIs.post(endpoints['login'], {
-                'username': username,
-                'password': password,
-                'client_id': '4SZjiVJQiZb5RRgvGdFJKigmmSVw3lR3KXDznR7W',
-                'client_secret': 'vj1SWDpotikv8feds7HL4kENgpHnAEv8MvIRFJyAzZgnVZATT6boanguGj9zA4PlKXAVS7SCn43qXm7uiaMtGjgDCxM9d5wk7oBhZmDoYuQ99b5IMmJpkQ7Avf2l3wWt',
-                'grant_type': "password",
-            }, {
+            // Tạo FormData và encode đúng format
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('client_id', 'I1WEfzVEDY5HgycZVTeSG6miBOQQJnwkkmFXBg8U');
+            formData.append('client_secret', 'pbkdf2_sha256$870000$7pSZBhMedNb55PhBdu2aFT$zhEIp3XwpAm8jl00mkIdQPtvyc+HPrWWKXvleFk/T5s=');
+            formData.append('grant_type', 'password');
+
+            console.log('Sending login request with:', formData.toString());
+
+            let res = await APIs.post(endpoints['login'], formData, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
+            console.log('Login response:', res);
 
             if (res.status === 200 && res.data.access_token) {
                 try {
@@ -43,41 +49,45 @@ const Login = () => {
                         }
                     });
                     
+                    console.log("User data received:", userdata.data);
+
+                    // Lưu token vào cookie
+                    cookie.save('token', res.data.access_token, { path: '/' });
+                    cookie.save('user', userdata.data, { path: '/' });
+
                     if (typeof dispatch === 'function') {
                         dispatch({
-                            "type": "login",
-                            "payload": {
+                            type: "login",
+                            payload: {
                                 user: userdata.data,
                                 token: res.data.access_token
                             }
                         });
+
+                        setMessage({ type: 'success', content: 'Đăng nhập thành công!' });
+                        
+                        setTimeout(() => {
+                            if (userdata.data.is_staff || userdata.data.is_superuser) {
+                                navigate("/admin_movie");
+                            } else {
+                                navigate("/");
+                            }
+                        }, 1000);
                     } else {
                         console.error("dispatch is not a function");
+                        setMessage({ type: 'error', content: "Lỗi xử lý đăng nhập" });
                     }
-
-                    setMessage({ type: 'success', content: 'Đăng nhập thành công!' });
-                    setTimeout(() => {
-                        if (userdata.data.is_staff || userdata.data.is_superuser) {
-                            navigate("/admin_movie");
-                        } else {
-                            navigate("/");
-                        }
-                    }, 2000);
-
-
                 } catch (userError) {
-                    setMessage({ type: 'error', content: "Đăng nhập thành công nhưng không thể lấy thông tin người dùng." });
+                    console.error("Error fetching user data:", userError);
+                    setMessage({ type: 'error', content: "Không thể lấy thông tin người dùng" });
                 }
-            } else {
-                handleLoginError(res.status);
             }
-
-        } catch (ex) {
-            console.error("Lỗi tại màn hình đăng nhập:", ex);
-            if (ex.response) {
-                handleLoginError(ex.response.status);
+        } catch (error) {
+            console.error("Login error:", error.response?.data);
+            if (error.response?.data?.error === 'unsupported_grant_type') {
+                setMessage({ type: 'error', content: "Lỗi xác thực, vui lòng thử lại" });
             } else {
-                setMessage({ type: 'error', content: "Lỗi kết nối, vui lòng thử lại sau." });
+                handleLoginError(error.response?.status);
             }
         } finally {
             setLoading(false);
@@ -93,17 +103,17 @@ const Login = () => {
 
     const handleLoginError = (status) => {
         switch(status) {
-          case 400:
-            setMessage({ type: 'error', content: "Sai tên đăng nhập hoặc mật khẩu" });
-            break;
-          case 401:
-            setMessage({ type: 'error', content: "Không có quyền truy cập" });
-            break;
-          case 403:
-            setMessage({ type: 'error', content: "Tài khoản của bạn đã bị khóa" });
-            break;
-          default:
-            setMessage({ type: 'error', content: "Đăng nhập không thành công. Vui lòng thử lại sau" });
+            case 400:
+                setMessage({ type: 'error', content: "Thông tin đăng nhập không hợp lệ" });
+                break;
+            case 401:
+                setMessage({ type: 'error', content: "Tên đăng nhập hoặc mật khẩu không đúng" });
+                break;
+            case 403:
+                setMessage({ type: 'error', content: "Tài khoản của bạn không có quyền truy cập" });
+                break;
+            default:
+                setMessage({ type: 'error', content: "Đăng nhập không thành công. Vui lòng thử lại sau" });
         }
     };
 
@@ -114,6 +124,8 @@ const Login = () => {
             }, 5000);
             return () => clearTimeout(timer);
         }
+        console.log("Current user:", cookie.load("user"));
+        console.log("Current token:", cookie.load("token"));
     }, [message]);
 
        

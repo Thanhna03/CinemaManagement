@@ -19,20 +19,22 @@ class BaseModel(models.Model):
 class User(BaseModel, AbstractUser):
     class Role(models.IntegerChoices):
         ADMIN = 1, "Admin"
-        STAFF = 2, "Staff"
-        CUSTOMER = 3, "Customer"
+        CUSTOMER = 2, "Customer"
 
     email = models.EmailField("email_address", unique=True, null=True)
-    role = models.IntegerField(choices=Role.choices, default=Role.ADMIN)
+    role = models.IntegerField(choices=Role.choices, default=Role.CUSTOMER)
     avatar = CloudinaryField(null=True)
     password_changed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.role == User.Role.ADMIN:
+        # Nếu user là superuser, tự động set các quyền cần thiết
+        if self.is_superuser:
             self.is_staff = True
-        else:
-            self.is_staff = False
-        super().save()
+            self.role = self.Role.ADMIN
+            # Đảm bảo tài khoản active
+            self.is_active = True
+
+        super().save(*args, **kwargs)
 
 class Genre(BaseModel):
     name = models.CharField(max_length=50, unique=True)
@@ -81,7 +83,7 @@ class Booking(BaseModel):
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE) #trong showtime da co Foreign key cua movie
     seats = models.CharField(max_length=10)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')])
-    promotion = models.ForeignKey('Promotion', on_delete=models.SET_NULL, null=True, blank=True)
+    # promotion = models.ForeignKey('Promotion', on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return f"Booking #{self.id} by {self.user} for {self.showtime}"
 

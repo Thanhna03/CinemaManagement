@@ -11,7 +11,7 @@ const Signup = () => {
         confirmPassword: '',
         email: '',
     });
-    const [role, setRole] = useState(3); // Default to 'Khách hàng'
+    const [role, setRole] = useState(2); // Default to 'Khách hàng'
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);

@@ -25,7 +25,7 @@ class CinemaAdminSite(admin.AdminSite):
 admin.site = CinemaAdminSite(name='mycinamewebsite')
 
 class MyUser(admin.ModelAdmin):
-    list_display = ['id', 'role', 'created_date', 'updated_date', 'active']
+    list_display = ['id', 'username', 'role', 'created_date', 'updated_date', 'active']
     list_filter = ['id', 'created_date']
     search_fields = ['id', 'role']
 

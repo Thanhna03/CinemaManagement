@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import APIs, { endpoints } from 'configs/APIs';
 import './style.scss';
-import { ChevronDown, Calendar  } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 
 const MovieShowtimes = () => {
@@ -12,6 +13,7 @@ const MovieShowtimes = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');  
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchCinemas();
@@ -207,20 +209,11 @@ const MovieShowtimes = () => {
         return `${day}/${month}`;
     };
 
-    const formatApiDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-
-
     const isToday = (date) => {
         const today = new Date();
         return date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear();
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear();
     };
 
     const formatDayName = (date) => {
@@ -248,6 +241,10 @@ const MovieShowtimes = () => {
     };
     const dateRange = generateDateRange();
     const groupedShowtimes = groupShowtimesByMovie(showtime);
+
+    const handleShowtimeClick = (showtimeId) => {
+        navigate(`/booking/${showtimeId}`);
+    };
 
     return (
         <div className="movie-showtime-wrapper">
@@ -324,16 +321,17 @@ const MovieShowtimes = () => {
                                         <div className="movie-info">
                                             <h4>{item.movie.name}</h4>
                                             <div className="showtime-section">
-                                                <div className="showtime-slots">
-                                                    {item.times.map((time) => (
-                                                        <button 
-                                                            key={`time-${time.id}`} 
-                                                            className="time-slot"
-                                                        >
-                                                            {time.start_time}
-                                                        </button>
-                                                    ))}
-                                                </div>
+                                            <div className="showtime-slots">
+                                                {item.times.map((time) => (
+                                                    <button 
+                                                        key={`time-${time.id}`} 
+                                                        className="time-slot"
+                                                        onClick={() => handleShowtimeClick(time.id)} 
+                                                    >
+                                                        {time.start_time}
+                                                    </button>
+                                                ))}
+                                            </div>
                                             </div>
                                         </div>
                                     </div>
